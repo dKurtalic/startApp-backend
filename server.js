@@ -12,13 +12,23 @@ app.use(express.json());
 app.use(cors())
 app.use('/', routes);
 
-await mongoose.connect(process.env.MONGO_URI, { useUnifiedTopology: true }).then(() => {
-    app.listen(PORT => {
-        console.log("Connected to database and app successfully running on port 4000")
+const connectDB = async () => {
+    try {
+        const conn = await mongoose.connect(process.env.MONGO_URI, { useUnifiedTopology: true });
+        console.log(`MongoDB Connected`);
+    } catch (error) {
+        console.log(error);
+        process.exit(1);
+    }
+}
+connectDB().then(() => {
+    app.listen(PORT, () => {
+        console.log("listening for requests");
     })
-}).catch((error) => {
-    console.log(error)
 })
-
+app.all('*', (req, res) => {
+    res.json({ "every thing": "is awesome" })
+})
+//?
 
 
